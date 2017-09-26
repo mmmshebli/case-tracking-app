@@ -67,7 +67,7 @@
 					<td>${applicant.firstName}</td>
 					<td>${applicant.lastName}</td>
 					<td>${applicant.dob}</td>
-					<td>${applicant.casee.caseNumber}</td>
+					<td><a href="${pageContext.request.contextPath}/case/searchcase?firstName=&lastName=&caseNumber=${applicant.casee.caseNumber}"><b>${applicant.casee.caseNumber}</b></a></td>
 				</tr>
 			</c:forEach>
 		</table>
