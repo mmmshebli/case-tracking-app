@@ -1,0 +1,45 @@
+<div class="wrapper">
+	<nav style="position:fixed; top:0; right:0; left:0; background-color:white; z-index:1;">
+		<div class="btn-group" style="position:absolute; top:0; right:0;">
+	  		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome: ${username} <span class="caret"></span></button>
+	  		<ul class="dropdown-menu">
+	    		<li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
+	  		</ul>
+		</div>
+		<div>
+			<h3>Case Management System</h3></br>
+		</div>
+		<ul class="nav nav-tabs">
+			<li role="presentation" id="tab1"><a href="${pageContext.request.contextPath}/case/list">Case Management</a></li>
+			<c:forEach var="tab" items="${tabs}">
+				<c:choose>
+					<c:when test="${tab == 'workers'}">
+						<li role="presentation" id="tab2"><a href="${pageContext.request.contextPath}/worker/list">Worker Management</a></li>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:forEach var="tab" items="${tabs}">
+				<c:choose>
+					<c:when test="${tab == 'applicants'}">
+						<li role="presentation" id="tab3"><a href="${pageContext.request.contextPath}/applicant/list">Applicants Search</a></li>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:forEach var="tab" items="${tabs}">
+				<c:choose>
+					<c:when test="${tab == 'applicants'}">
+						<li role="presentation" id="tab4"><a href="${pageContext.request.contextPath}/location/list">Locations</a></li>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:forEach var="tab" items="${tabs}">
+				<c:choose>
+					<c:when test="${tab == 'users'}">
+						<li role="presentation" id="tab5"><a href="${pageContext.request.contextPath}/users/listusers">Users Management</a></li>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+		</ul>
+	</nav>
+
+						
