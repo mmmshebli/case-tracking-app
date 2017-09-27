@@ -222,6 +222,9 @@ public class CaseController {
 			int caseNumberInteger = Integer.parseInt(caseNumber);
 			List<Case> cases = caseService.searchCase(firstName, lastName, caseNumberInteger, filterForSecurity, workerId);
 			model.addAttribute("cases", cases);
+			if(cases.size() > 0){
+				model.addAttribute("casee", cases.get(0));
+			}
 		}catch(NumberFormatException nfe){
 			nfe.printStackTrace();
 			List<Case> cases = caseService.searchCase(firstName, lastName, 0, filterForSecurity, workerId);
