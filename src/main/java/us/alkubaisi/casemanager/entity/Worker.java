@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(
-		name="worker",
+		name="WORKER",
 		uniqueConstraints = {@UniqueConstraint(columnNames="worker_number")}
 
 )

@@ -19,7 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="casee")
+@Table(name="CASEE")
 public class Case {
 
 	@Id
