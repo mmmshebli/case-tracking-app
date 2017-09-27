@@ -31,8 +31,8 @@
           destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/case-manager?useSSL=false" />
-        <property name="user" value="casetrackingdbadmin" />
-        <property name="password" value="casetrackingdbadmin" /> 
+        <property name="user" value="casetracking" />
+        <property name="password" value="casetracking" /> 
 
       <!--   these are connection pool properties for C3P0 -->
         <property name="minPoolSize" value="5" />
