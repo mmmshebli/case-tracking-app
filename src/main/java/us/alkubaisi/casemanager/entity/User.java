@@ -5,8 +5,11 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,8 +27,13 @@ public class User {
 	@Column(name="enabled")
 	private int enabled;
 	
-	@OneToOne(mappedBy = "user", cascade={CascadeType.ALL})
-	private UserRole userRole;
+	@ManyToMany(/*fetch=FetchType.EAGER,*/ cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(
+			name="USER_ROLES",
+			joinColumns=@JoinColumn(name="username"),
+			inverseJoinColumns=@JoinColumn(name="role_id")
+			)
+	private List<Role> roles;
 	
 	@OneToOne(mappedBy = "user", cascade={CascadeType.ALL})
 	private Worker worker;
@@ -34,12 +42,12 @@ public class User {
 		
 	}
 
-	public User(String userName, String password, int enabled, UserRole userRole, Worker worker) {
+	public User(String userName, String password, int enabled, List<Role> roles, Worker worker) {
 		super();
 		this.userName = userName;
 		this.password = password;
 		this.enabled = enabled;
-		this.userRole = userRole;
+		this.roles = roles;
 		this.worker = worker;
 	}
 
@@ -66,13 +74,13 @@ public class User {
 	public void setEnabled(int enabled) {
 		this.enabled = enabled;
 	}
-
-	public UserRole getUserRole() {
-		return userRole;
+	
+	public List<Role> getRoles() {
+		return roles;
 	}
 
-	public void setUserRole(UserRole userRole) {
-		this.userRole = userRole;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 
 	public Worker getWorker() {
@@ -85,8 +93,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userName=" + userName + ", password=" + password + ", enabled=" + enabled + ", userRole="
-				+ userRole.getRole() + ", worker=" + worker.getFirstName() + "]";
+		return "User [userName=" + userName + ", password=" + password + ", enabled=" + enabled + ", roles="
+				+ roles + ", worker=" + worker.getFirstName() + "]";
 	}
 
 	

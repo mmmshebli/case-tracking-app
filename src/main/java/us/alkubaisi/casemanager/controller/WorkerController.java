@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import us.alkubaisi.casemanager.entity.Case;
 import us.alkubaisi.casemanager.entity.Location;
+import us.alkubaisi.casemanager.entity.Role;
 import us.alkubaisi.casemanager.entity.Worker;
 import us.alkubaisi.casemanager.service.CaseService;
 import us.alkubaisi.casemanager.service.LocationService;
+import us.alkubaisi.casemanager.service.RoleService;
 import us.alkubaisi.casemanager.service.WorkerService;
 
 @Controller
@@ -33,6 +34,9 @@ public class WorkerController {
 	
 	@Autowired
 	private CaseService caseService;
+	
+	@Autowired
+	private RoleService roleService;
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public String workersList(Model model){
@@ -98,11 +102,13 @@ public class WorkerController {
 	
 	@RequestMapping(value="addworker", method=RequestMethod.GET)
 	public String addWorker(Model model){
+		List<Role> roles = roleService.getRoles();
 		int largestWorkerNumber = workerService.getLargestWorkerNumber();
 		Worker worker = new Worker();
 		worker.setWorkerNumber(largestWorkerNumber + 1);
 		model.addAttribute("largestWorkerNumber", largestWorkerNumber);
 		model.addAttribute("worker", worker);
+		model.addAttribute("roles", roles);
 		List<Location> locations = locationService.locationList();
 		model.addAttribute("locations", locations);
 		return "add-worker-form";

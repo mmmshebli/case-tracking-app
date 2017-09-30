@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import us.alkubaisi.casemanager.entity.UserRole;
 import us.alkubaisi.casemanager.entity.Worker;
 
 @Repository
@@ -88,7 +87,7 @@ public class WorkerDAOImpl implements WorkerDAO {
 		Session session = sessionFactory.getCurrentSession();
 		String encodedPassword = passwordEncoder.encode(worker.getUser().getPassword());
 		worker.getUser().setPassword(encodedPassword);
-		worker.getUser().getUserRole().setUser(worker.getUser());
+		//worker.getUser().getUserRole().setUser(worker.getUser());
 		session.saveOrUpdate(worker);
 	}
 
