@@ -54,23 +54,39 @@ CREATE TABLE `WORKER` (
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `USERS` (
-    `username` VARCHAR(128) NOT NULL,
+    `username` VARCHAR(128) NOT NULL UNIQUE,
     `password` VARCHAR(128) NOT NULL,
 	`enabled` TINYINT NOT NULL DEFAULT 1,
     PRIMARY KEY (`username`)
+);
+
+DROP TABLE IF EXISTS `ROLES`;
+
+CREATE TABLE `ROLES` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+    `role` VARCHAR(45) NOT NULL UNIQUE,
+    PRIMARY KEY (`id`)
 );
 
 
 DROP TABLE IF EXISTS `USER_ROLES`;
 
 CREATE TABLE `USER_ROLES`(
+	`username` VARCHAR(128) NOT NULL,
+    `role_id` int(11) NOT NULL,
+    PRIMARY KEY (`username`, `role_id`),
+    FOREIGN KEY (`username`) REFERENCES `USERS` (`username`),
+    FOREIGN KEY (`role_id`) REFERENCES `ROLES` (`id`)
+);
+
+/*CREATE TABLE `USER_ROLES`(
 	`id` int(11) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(128) NOT NULL,
     `role` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`id`, `username`),
     FOREIGN KEY (`username`) REFERENCES `USERS` (`username`) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
+);*/
 
 
 DROP TABLE IF EXISTS `APPLICANT`;
@@ -90,6 +106,7 @@ CREATE TABLE `LOCATION` (
   `name` VARCHAR(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -112,7 +129,26 @@ INSERT INTO `USERS` VALUES
 	('supervisor2', '$2a$10$zgg1RZtC5G9DtA0CLp1ET.lVAu4.yY74Ix5BpMtVPHv9h81mpUaPi',1);
 
 
+INSERT INTO `ROLES` VALUES
+	(1, 'ROLE_ADMIN'),
+    (2, 'ROLE_SUPERVISOR'),
+    (3, 'ROLE_WORKER');
+    
 INSERT INTO `USER_ROLES` VALUES
+	('mustafa', 1),
+	('admin1', 1),
+	('admin2', 1),
+	('worker1', 3),
+	('worker2', 3),
+	('supervisor1',2),
+	('supervisor2',2),
+	('worker3', 3),
+	('worker4', 3),
+	('worker5', 3),
+	('worker6', 3),
+	('worker7', 3);
+
+/*INSERT INTO `USER_ROLES` VALUES
 	(1,'mustafa', 'ROLE_ADMIN'),
 	(2,'admin1', 'ROLE_ADMIN'),
 	(3,'admin2', 'ROLE_ADMIN'),
@@ -124,7 +160,7 @@ INSERT INTO `USER_ROLES` VALUES
 	(9,'worker4', 'ROLE_WORKER'),
 	(10,'worker5', 'ROLE_WORKER'),
 	(11,'worker6', 'ROLE_WORKER'),
-	(12,'worker7', 'ROLE_WORKER');
+	(12,'worker7', 'ROLE_WORKER');*/
 
 INSERT INTO `WORKER` VALUES 
 	(1,1000,'Homer','Simpson','admin1',1),
