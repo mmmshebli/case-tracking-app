@@ -24,4 +24,11 @@ public class RoleDAOImpl implements RoleDAO {
 		return roles;
 	}
 
+	@Override
+	public Role getRoleById(int roleId) {
+		Session session = sessionFactory.getCurrentSession();
+		Role role = session.get(Role.class, roleId);
+		return role;
+	}
+
 }

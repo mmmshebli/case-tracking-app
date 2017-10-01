@@ -27,7 +27,7 @@ public class User {
 	@Column(name="enabled")
 	private int enabled;
 	
-	@ManyToMany(/*fetch=FetchType.EAGER,*/ cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToMany(fetch=FetchType.EAGER, cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(
 			name="USER_ROLES",
 			joinColumns=@JoinColumn(name="username"),

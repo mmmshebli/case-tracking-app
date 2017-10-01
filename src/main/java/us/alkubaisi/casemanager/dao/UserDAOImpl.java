@@ -35,5 +35,11 @@ public class UserDAOImpl implements UserDAO {
 		u.setPassword(passwordEncoder.encode(user.getPassword()));
 		session.saveOrUpdate(u);
 	}
+	
+	@Override
+	public void updateUserRoles(User user) {
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(user);
+	}
 
 }

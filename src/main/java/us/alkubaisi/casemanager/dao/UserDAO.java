@@ -10,4 +10,6 @@ public interface UserDAO {
 	
 	public void saveUser(User user);
 	
+	public void updateUserRoles(User user);
+	
 }

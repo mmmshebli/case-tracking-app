@@ -7,5 +7,7 @@ import us.alkubaisi.casemanager.entity.Role;
 public interface RoleService {
 	
 	public List<Role> getRoles();
+	
+	public Role getRoleById(int roleId);
 
 }

@@ -1,8 +1,9 @@
 package us.alkubaisi.casemanager.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 
@@ -22,7 +22,7 @@ public class WelcomeController {
 	public String showLoginPage(Model model, Principal principal){
 		//model.addAttribute("username", "mustafa");
 		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)    SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-		List<String> tabs = new ArrayList<>();
+		Set<String> tabs = new HashSet<>();
 		for(SimpleGrantedAuthority authority : authorities){
 			if(authority.toString().equals("ROLE_ADMIN")){
 				tabs.add("cases");
