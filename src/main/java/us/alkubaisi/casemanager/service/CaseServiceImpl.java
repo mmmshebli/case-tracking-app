@@ -24,6 +24,13 @@ public class CaseServiceImpl implements CaseService {
 		System.out.println(casesList);
 		return casesList;
 	}
+	
+	@Override
+	@Transactional
+	public List<Case> listCasesByPage(int pageNumber) {
+		List<Case> cases = caseDAO.listCasesByPage(pageNumber);
+		return cases;
+	}
 
 	@Override
 	@Transactional
@@ -43,6 +50,20 @@ public class CaseServiceImpl implements CaseService {
 	@Transactional
 	public List<Case> listCasesByWorkerId(int workerId) {
 		List<Case> casesList = caseDAO.listCasesByWorkerId(workerId);
+		return casesList;
+	}
+	
+	@Override
+	@Transactional
+	public List<Case> listCasesByWorkerIdPaged(int workerId, int pageNumber) {
+		List<Case> casesList = caseDAO.listCasesByWorkerIdPaged(workerId, pageNumber);
+		return casesList;
+	}
+	
+	@Override
+	@Transactional
+	public List<Case> listCasesByLocationIdPaged(int locationId, int pageNumber) {
+		List<Case> casesList = caseDAO.listCasesByLocationIdPaged(locationId, pageNumber);
 		return casesList;
 	}
 
@@ -65,5 +86,27 @@ public class CaseServiceImpl implements CaseService {
 		List<Case> cases = caseDAO.searchCase(firstName, lastName, caseNumber, filterForSecurity, workerId);
 		return cases;
 	}
+
+	@Override
+	@Transactional
+	public int getCasesCount() {
+		int caseCount = caseDAO.getCasesCount();
+		return caseCount;
+	}
+
+	@Override
+	@Transactional
+	public int getCasesCountByWorker(int workerId) {
+		int caseCount = caseDAO.getCasesCountByWorker(workerId);
+		return caseCount;
+	}
+
+	@Override
+	@Transactional
+	public int getCasesCountByLocation(int locationId) {
+		int caseCount = caseDAO.getCasesCountByLocation(locationId);
+		return caseCount;
+	}
+
 
 }

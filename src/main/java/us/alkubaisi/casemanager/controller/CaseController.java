@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import us.alkubaisi.casemanager.entity.Case;
 import us.alkubaisi.casemanager.entity.CaseUpdate;
 import us.alkubaisi.casemanager.entity.Location;
-import us.alkubaisi.casemanager.entity.User;
 import us.alkubaisi.casemanager.entity.Worker;
 import us.alkubaisi.casemanager.service.CaseService;
 import us.alkubaisi.casemanager.service.CaseUpdateService;
@@ -29,6 +29,9 @@ import us.alkubaisi.casemanager.service.WorkerService;
 @Controller
 @RequestMapping(value="/case")
 public class CaseController {
+	
+	@Autowired
+	private Environment env;
 
 	@Autowired
 	private CaseService caseService;
@@ -47,37 +50,40 @@ public class CaseController {
 	
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
-	public String listCases(Model model, Principal principal){
+	public String listCases(@RequestParam(name="pageNumber", required=false, defaultValue = "1") int pageNumber, 
+							@RequestParam(name="caseId", required=false, defaultValue = "0") int caseId, Model model, Principal principal){
+		int pageSize = Integer.parseInt(env.getProperty("pageSize"));
+		int totalCaseCount = caseService.getCasesCount();
 		List<String> roles = getCurrentPrincipalRoles();
 		List<Case> cases = new ArrayList<>();
 		if(roles.contains("ROLE_ADMIN") || roles.contains("ROLE_SUPERVISOR")){
-			cases = caseService.listCases();
+			cases = caseService.listCasesByPage(pageNumber);
 		}else{
-			cases = caseService.listCasesByWorkerId(workerService.getWorkerIdByUsername(principal.getName()));
-		}
+			int workerId = workerService.getWorkerIdByUsername(principal.getName());
+			cases = caseService.listCasesByWorkerIdPaged(workerId, pageNumber);
+			totalCaseCount = caseService.getCasesCountByWorker(workerId);
+		}	
+		int totalPages = (int)Math.floor(totalCaseCount/pageSize);
+		totalPages = (totalCaseCount%pageSize > 0)? ++totalPages : totalPages;
 		model.addAttribute("cases", cases);
-		if(cases.size() > 0){
-			model.addAttribute("casee", cases.get(0));
+		model.addAttribute("totalCaseCount", totalCaseCount);
+		model.addAttribute("currentPage", pageNumber);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("pageSize", pageSize);
+		if(caseId>0){
+			Case selectedCase = caseService.getCase(caseId);
+			model.addAttribute("casee", selectedCase);
 		}else{
-			model.addAttribute("casee", new Case());
+			if(cases.size() > 0){
+				model.addAttribute("casee", cases.get(0));
+			}else{
+				model.addAttribute("casee", new Case());
+			}
 		}
+		
 		return "list-cases";
 	}
 	
-	@RequestMapping(value="/listWithSelectedDetails", method = RequestMethod.GET)
-	public String listCasesWithSelectedDetails(@RequestParam("caseId") int caseId, Model model, Principal principal){
-		List<String> roles = getCurrentPrincipalRoles();
-		List<Case> cases = new ArrayList<>();
-		if(roles.contains("ROLE_ADMIN") || roles.contains("ROLE_SUPERVISOR")){
-			cases = caseService.listCases();
-		}else{
-			cases = caseService.listCasesByWorkerId(workerService.getWorkerIdByUsername(principal.getName()));
-		}	
-		Case selectedCase = caseService.getCase(caseId);
-		model.addAttribute("cases", cases);
-		model.addAttribute("casee", selectedCase);
-		return "list-cases";
-	}
 	
 	@RequestMapping(value="/getcase", method = RequestMethod.GET)
 	public String getCase(@RequestParam("id") int id){
@@ -103,12 +109,13 @@ public class CaseController {
 		caseService.newCase(casee);
 		List<Case> cases = caseService.listCases();
 		model.addAttribute("cases", cases);
-		return "list-cases";
+		return "redirect:/case/list?caseId=" + casee.getId();
 	}
 	
 	@RequestMapping(value="/updatecase", method = RequestMethod.POST)
 	public String updateCase(@RequestParam("newstatus") String newStatus, 
-							@RequestParam("caseId") int caseId, Model model, Principal principal){
+							@RequestParam("caseId") int caseId, 
+							@RequestParam("pageNumber") int pageNumber, Model model, Principal principal){
 		Case selectedCase = caseService.getCase(caseId);
 		selectedCase.setStatus(newStatus);
 		caseService.updateCase(selectedCase);
@@ -121,7 +128,7 @@ public class CaseController {
 		}	
 		model.addAttribute("cases", cases);
 		model.addAttribute("casee", selectedCase);
-		return "list-cases";
+		return "redirect:/case/list?caseId=" + caseId + "&pageNumber=" + pageNumber;
 	}
 	
 	@RequestMapping(value="assigntoworker", method=RequestMethod.GET)
@@ -148,12 +155,13 @@ public class CaseController {
 	@RequestMapping(value="createcseupdate", method=RequestMethod.POST)
 	public String createcseupdate(@RequestParam("caseId") int caseId,
 								  @RequestParam("internalUpdateDetail") String internalUpdateDetail,
-								  @RequestParam("applicantFacingUpdateDetail") String applicantFacingUpdateDetail, Model model){
+								  @RequestParam("applicantFacingUpdateDetail") String applicantFacingUpdateDetail,
+								  @RequestParam("pageNumber") int pageNumber, Model model){
 		Case casee = caseService.getCase(caseId);
 		CaseUpdate caseUpdate = new CaseUpdate(new Date(), internalUpdateDetail, applicantFacingUpdateDetail, casee); 
 		caseUpdateService.saveCaseUpdate(caseUpdate);
 		model.addAttribute("caseId", caseId);
-		return "redirect:/case/listWithSelectedDetails";
+		return "redirect:/case/list?caseId=" + caseId + "&pageNumber=" + pageNumber;
 	}
 	
 	public List<String> getCurrentPrincipalRoles(){
@@ -166,15 +174,28 @@ public class CaseController {
 	}
 	
 	@RequestMapping(value="/listcasesbyworker", method = RequestMethod.GET)
-	public String listCasesByWorker(@RequestParam("workerId") int workerId, Model model, Principal principal){
+	public String listCasesByWorker(@RequestParam("workerId") int workerId, 
+									@RequestParam(name="pageNumber", required=false, defaultValue = "1") int pageNumber, Model model, Principal principal){
+		int pageSize = Integer.parseInt(env.getProperty("pageSize"));
 		List<String> roles = getCurrentPrincipalRoles();
 		List<Case> cases = new ArrayList<>();
 		if(roles.contains("ROLE_ADMIN") || roles.contains("ROLE_SUPERVISOR")){
-			cases = caseService.listCasesByWorkerId(workerId);
+			cases = caseService.listCasesByWorkerIdPaged(workerId, pageNumber);
 		}else{
-			cases = caseService.listCasesByWorkerId(workerService.getWorkerIdByUsername(principal.getName()));
+			cases = caseService.listCasesByWorkerIdPaged(workerService.getWorkerIdByUsername(principal.getName()), pageNumber);
 		}
+		int totalCaseCount = caseService.getCasesCountByWorker(workerId);
+		int totalPages = (int)Math.floor(totalCaseCount/pageSize);
+		totalPages = (totalCaseCount%pageSize > 0)? ++totalPages : totalPages;
+		model.addAttribute("totalCaseCount", totalCaseCount);
+		model.addAttribute("currentPage", 1);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("cases", cases);
+		
+		model.addAttribute("listBy", "worker");
+		model.addAttribute("workerId", workerId);
+		model.addAttribute("currentPage", pageNumber);
 		if(cases.size() > 0){
 			model.addAttribute("casee", cases.get(0));
 		}else{
@@ -184,15 +205,28 @@ public class CaseController {
 	}
 	
 	@RequestMapping(value="/listcasesbylocation", method = RequestMethod.GET)
-	public String listCasesByLocation(@RequestParam("locationId") int locationId, Model model, Principal principal){
+	public String listCasesByLocation(@RequestParam("locationId") int locationId, 
+									  @RequestParam(name="pageNumber", required=false, defaultValue = "1") int pageNumber, Model model, Principal principal){
+		int pageSize = Integer.parseInt(env.getProperty("pageSize"));
 		List<String> roles = getCurrentPrincipalRoles();
 		List<Case> cases = new ArrayList<>();
 		if(roles.contains("ROLE_ADMIN") || roles.contains("ROLE_SUPERVISOR")){
-			cases = caseService.listCasesByLocationId(locationId);
+			cases = caseService.listCasesByLocationIdPaged(locationId, pageNumber);
 		}else{
-			cases = caseService.listCasesByWorkerId(workerService.getWorkerIdByUsername(principal.getName()));
+			cases = caseService.listCasesByWorkerIdPaged(workerService.getWorkerIdByUsername(principal.getName()), pageNumber);
 		}
+		int totalCaseCount = caseService.getCasesCountByLocation(locationId);
+		int totalPages = (int)Math.floor(totalCaseCount/pageSize);
+		totalPages = (totalCaseCount%pageSize > 0)? ++totalPages : totalPages;
+		model.addAttribute("totalCaseCount", totalCaseCount);
+		model.addAttribute("currentPage", 1);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("cases", cases);
+		
+		model.addAttribute("listBy", "location");
+		model.addAttribute("locationId", locationId);
+		model.addAttribute("currentPage", pageNumber);
 		if(cases.size() > 0){
 			model.addAttribute("casee", cases.get(0));
 		}else{
@@ -205,6 +239,9 @@ public class CaseController {
 	public String searchWorker(@RequestParam("firstName") String firstName, 
 								@RequestParam("lastName") String lastName, 
 								@RequestParam("caseNumber") String caseNumber, Model model, Principal principal){
+		int pageSize = Integer.parseInt(env.getProperty("pageSize"));
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("currentPage", 1);
 		String userName = principal.getName();
 		int workerId = workerService.getWorkerIdByUsername(userName);
 		//adding all locations to populate the search by location drop down list
