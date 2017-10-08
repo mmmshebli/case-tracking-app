@@ -54,23 +54,39 @@ CREATE TABLE `WORKER` (
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `USERS` (
-    `username` VARCHAR(128) NOT NULL,
+    `username` VARCHAR(128) NOT NULL UNIQUE,
     `password` VARCHAR(128) NOT NULL,
 	`enabled` TINYINT NOT NULL DEFAULT 1,
     PRIMARY KEY (`username`)
+);
+
+DROP TABLE IF EXISTS `ROLES`;
+
+CREATE TABLE `ROLES` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+    `role` VARCHAR(45) NOT NULL UNIQUE,
+    PRIMARY KEY (`id`)
 );
 
 
 DROP TABLE IF EXISTS `USER_ROLES`;
 
 CREATE TABLE `USER_ROLES`(
+	`username` VARCHAR(128) NOT NULL,
+    `role_id` int(11) NOT NULL,
+    PRIMARY KEY (`username`, `role_id`),
+    FOREIGN KEY (`username`) REFERENCES `USERS` (`username`),
+    FOREIGN KEY (`role_id`) REFERENCES `ROLES` (`id`)
+);
+
+/*CREATE TABLE `USER_ROLES`(
 	`id` int(11) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(128) NOT NULL,
     `role` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`id`, `username`),
     FOREIGN KEY (`username`) REFERENCES `USERS` (`username`) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
+);*/
 
 
 DROP TABLE IF EXISTS `APPLICANT`;
@@ -90,6 +106,7 @@ CREATE TABLE `LOCATION` (
   `name` VARCHAR(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -112,7 +129,26 @@ INSERT INTO `USERS` VALUES
 	('supervisor2', '$2a$10$zgg1RZtC5G9DtA0CLp1ET.lVAu4.yY74Ix5BpMtVPHv9h81mpUaPi',1);
 
 
+INSERT INTO `ROLES` VALUES
+	(1, 'ROLE_ADMIN'),
+    (2, 'ROLE_SUPERVISOR'),
+    (3, 'ROLE_WORKER');
+    
 INSERT INTO `USER_ROLES` VALUES
+	('mustafa', 1),
+	('admin1', 1),
+	('admin2', 1),
+	('worker1', 3),
+	('worker2', 3),
+	('supervisor1',2),
+	('supervisor2',2),
+	('worker3', 3),
+	('worker4', 3),
+	('worker5', 3),
+	('worker6', 3),
+	('worker7', 3);
+
+/*INSERT INTO `USER_ROLES` VALUES
 	(1,'mustafa', 'ROLE_ADMIN'),
 	(2,'admin1', 'ROLE_ADMIN'),
 	(3,'admin2', 'ROLE_ADMIN'),
@@ -124,7 +160,7 @@ INSERT INTO `USER_ROLES` VALUES
 	(9,'worker4', 'ROLE_WORKER'),
 	(10,'worker5', 'ROLE_WORKER'),
 	(11,'worker6', 'ROLE_WORKER'),
-	(12,'worker7', 'ROLE_WORKER');
+	(12,'worker7', 'ROLE_WORKER');*/
 
 INSERT INTO `WORKER` VALUES 
 	(1,1000,'Homer','Simpson','admin1',1),
@@ -155,7 +191,37 @@ INSERT INTO `APPLICANT` VALUES
     (12,'Mereil','Strepe','1978-11-19'),
     (13,'John','Travolta','1979-11-19'),
     (14,'Clint','Eastwood','1990-11-19'),
-    (15,'Bruce','Willis','1995-11-19');
+    (15,'Bruce','Willis','1995-11-19'),
+    (16,'Jogn','Wyne','1979-08-04'),
+	(17,'Walt','Disney','1988-05-03'),
+	(18,'Richard','Geer','1960-12-11'),
+	(19,'Amitab','Khan','1999-01-01'),
+	(20,'Omar','Shareef','1980-03-24'),
+    (21,'Dinzel','Washington','1990-11-19'),
+    (22,'Anthony','Quinn','1978-11-19'),
+    (23,'Al','Pacino','1980-11-19'),
+    (24,'Russel','Crow','1977-11-19'),
+    (25,'Brad','Pit','1955-11-19'),
+    (26,'Angelina','Jolie','1940-11-19'),
+    (27,'Morgan','Freeman','1978-11-19'),
+    (28,'Keanu','Reeves','1979-11-19'),
+    (29,'Nicholas','Cage','1990-11-19'),
+    (30,'Mel','Gibson','1995-11-19'),
+    (31,'Antonio','Panderas','1979-08-04'),
+	(32,'Sandra','Bullock','1988-05-03'),
+	(33,'Meg','Ryan','1960-12-11'),
+	(34,'Nicole','Kidman','1999-01-01'),
+	(35,'Saleem','AlBasri','1980-03-24'),
+    (36,'Cameron','Diaz','1990-11-19'),
+    (37,'Adil','Imam','1978-11-19'),
+    (38,'Donald','Trump','1980-11-19'),
+    (39,'Barack','Obama','1977-11-19'),
+    (40,'George','Bush','1955-11-19'),
+    (41,'Bill','Clinton','1940-11-19'),
+    (42,'Ronald','Regan','1978-11-19'),
+    (43,'Spong','Bob','1979-11-19'),
+    (44,'Patrick','Star','1990-11-19'),
+    (45,'Mr','Crab','1995-11-19');
     
 INSERT INTO `CASEE` VALUES 
 	(1,20070001,'Very promissing case','Pending','2017-01-01','2017-09-05',4,4,1),
@@ -172,7 +238,37 @@ INSERT INTO `CASEE` VALUES
     (13,20070012,'The queen of cases','New','2017-06-22','2017-09-05',6,1,12),
     (14,20070013,'This case will be easily approved','New','2017-06-22','2017-06-22',6,1,13),
     (15,20070014,'This case has no details','New','2017-06-22','2017-06-22',6,1,14),
-    (16,20070015,'The details of this case is written with secret ink','New','2017-06-22','2017-06-22',6,1,15);
+    (16,20070015,'The details of this case is written with secret ink','New','2017-06-22','2017-06-22',6,1,15),
+    (17,20070016,'Very promissing case','Pending','2017-01-01','2017-09-05',4,4,16),
+	(18,20070017,'There is no hope for acceptance','Pending','2017-02-01','2017-09-05',3,3,17),
+	(19,20070018,'This is a very complicated case','Approved','2016-07-30','2017-09-05',4,4,18),
+	(20,20070019,'This case is pre approved because app has friends in high places','Denied','2015-12-24','2017-09-05',1,1,19),
+	(21,20070020,'NO way this application can be approved','Initial review','2016-07-17','2017-09-05',5,3,20),
+    (22,20070021,'This case is soo sad','New','2017-06-22','2017-06-22',5,3,21),
+    (23,20070022,'This case will never be approved nor denied','New','2017-06-22','2017-06-22',5,3,22),
+    (24,20070023,'This case is opened in a very critical time','New','2017-06-22','2017-06-22',5,3,23),
+    (25,20070024,'This case is suite case','New','2017-06-22','2017-06-22',5,3,24),
+    (26,20070025,'Detail details details and more details','New','2017-06-22','2017-06-22',6,1,25),
+    (27,20070026,'Bl =a bla blablabla bla bla','New','2017-06-22','2017-06-22',6,1,26),
+    (28,20070027,'The queen of cases','New','2017-06-22','2017-09-05',6,1,27),
+    (29,20070028,'This case will be easily approved','New','2017-06-22','2017-06-22',6,1,28),
+    (30,20070029,'This case has no details','New','2017-06-22','2017-06-22',6,1,29),
+    (31,20070030,'The details of this case is written with secret ink','New','2017-06-22','2017-06-22',6,1,30),
+    (32,20070031,'Very promissing case','Pending','2017-01-01','2017-09-05',4,4,31),
+	(33,20070032,'There is no hope for acceptance','Pending','2017-02-01','2017-09-05',3,3,32),
+	(34,20070033,'This is a very complicated case','Approved','2016-07-30','2017-09-05',4,4,33),
+	(35,20070034,'This case is pre approved because app has friends in high places','Denied','2015-12-24','2017-09-05',1,1,34),
+	(36,20070035,'NO way this application can be approved','Initial review','2016-07-17','2017-09-05',5,3,35),
+    (37,20070036,'This case is soo sad','New','2017-06-22','2017-06-22',5,3,36),
+    (38,20070037,'This case will never be approved nor denied','New','2017-06-22','2017-06-22',5,3,37),
+    (39,20070038,'This case is opened in a very critical time','New','2017-06-22','2017-06-22',5,3,38),
+    (40,20070039,'This case is suite case','New','2017-06-22','2017-06-22',5,3,39),
+    (41,20070040,'Detail details details and more details','New','2017-06-22','2017-06-22',6,1,40),
+    (42,20070041,'Bl =a bla blablabla bla bla','New','2017-06-22','2017-06-22',6,1,41),
+    (43,20070042,'The queen of cases','New','2017-06-22','2017-09-05',6,1,42),
+    (44,20070043,'This case will be easily approved','New','2017-06-22','2017-06-22',6,1,43),
+    (45,20070044,'This case has no details','New','2017-06-22','2017-06-22',6,1,44),
+    (46,20070045,'The details of this case is written with secret ink','New','2017-06-22','2017-06-22',6,1,45);
     
     
 INSERT INTO `CASE_UPDATE` VALUES 

@@ -70,6 +70,89 @@
 							</c:when>
 						</c:choose>
 					</c:forEach>
+
+
+
+
+
+				<nav aria-label="Page navigation">
+				
+				
+				<ul class="pagination">
+					
+					
+				<!-- ******************PAGINATION************* -->
+					<c:choose>
+						<c:when test="${listBy == 'worker' }">
+							<c:set var = "basePageUrl" value = "/case/listcasesbyworker?workerId=${workerId}"/>
+						</c:when>
+						<c:when test="${listBy == 'location'}">
+							<c:set var = "basePageUrl" value = "/case/listcasesbylocation?locationId=${locationId}"/>
+						</c:when>
+						<c:otherwise>
+							<c:set var = "basePageUrl" value = "/case/list"/>
+						</c:otherwise>
+					</c:choose>
+					<c:choose>
+						<c:when test="${currentPage == 1}">
+							<li class="disabled"><a href="#" aria-label="Previous"> <span aria-hidden="true">&laquo;</span></a></li>
+						</c:when>
+						<c:otherwise>
+							<c:url var="prevPageLink" value="${basePageUrl}">
+								<c:param name="pageNumber" value="${currentPage - 1}" />
+							</c:url>
+							<li><a href="${prevPageLink}" aria-label="Previous"> <span aria-hidden="true">&laquo;</span></a></li>
+						</c:otherwise>
+					</c:choose>
+					<c:forEach begin="1" end="${totalCaseCount}" step="${pageSize}"
+						varStatus="loop">
+						<c:choose>
+							<c:when
+								test="${loop.count > (currentPage-5) && loop.count <= (currentPage+5) || (currentPage <= 5 && loop.count <= 10) || totalPages <=10 || (totalPages - loop.count <= 10)}">
+								<c:url var="pageLink" value="${basePageUrl}">
+									<c:param name="pageNumber" value="${loop.count}" />
+								</c:url>
+								<c:choose>
+									<c:when test="${loop.count == currentPage}">
+										<li class="active"><a href="${pageLink}"><c:out value="${loop.count}" /></a></li>
+									</c:when>
+									<c:otherwise>
+										<li><a href="${pageLink}"><c:out value="${loop.count}" /></a></li>
+									</c:otherwise>
+								</c:choose>
+							</c:when>
+						</c:choose>
+					</c:forEach>
+					<c:choose>
+						<c:when test="${currentPage < (totalPages-5) && (totalPages > 10)}">
+							<c:url var="nextFive" value="${basePageUrl}">
+								<c:param name="pageNumber" value="${currentPage + 5}" />
+							</c:url>
+							<li><a href="${nextFive}"><c:out value="....." /></a></li>
+						</c:when>
+					</c:choose>
+					<c:choose>
+						<c:when test="${currentPage == totalPages}">
+							<li class="disabled"><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span></a></li>
+						</c:when>
+						<c:otherwise>
+							<c:url var="nextPageLink" value="${basePageUrl}">
+								<c:param name="pageNumber" value="${currentPage + 1}" />
+							</c:url>
+							<li><a href="${nextPageLink}" aria-label="Next"> <span aria-hidden="true">&raquo;</span></a></li>
+						</c:otherwise>
+					</c:choose>
+					
+					
+					
+					
+					</ul>
+					</nav>
+					
+					
+					
+					
+					
 					<table class="table table-striped">
 						<tr>
 							<th>Case Number:</th>
@@ -81,7 +164,7 @@
 						</tr>
 						<c:forEach var="casee" items="${cases}">
 							<tr>
-								<td><a href="listWithSelectedDetails?caseId=${casee.id}"><b>${casee.caseNumber}</b></a></td>
+								<td><a href="list?caseId=${casee.id}&pageNumber=${currentPage}"><b>${casee.caseNumber}</b></a></td>
 								<td>${casee.status}</td>
 								<td>${casee.dateOpened}</td>
 								<td>${casee.lastUpdated}</td>
@@ -96,8 +179,9 @@
 								<td>${casee.location.name}</td>
 							</tr>
 						</c:forEach>
-					</table>       			     			
-        		</div>
+					</table>
+
+			</div>
        			<div class="col-xs-5">
        				<fieldset>
        					<legend class="col-form-legend"><h2>Case ${casee.caseNumber} Details</h2></legend>
@@ -138,6 +222,7 @@
 							<label for="newstatus" class="col-form-label">New Status:</label>
 							<form action="updatecase"  method="POST" class="form-inline"  id="newstatus">	
 								<input type="hidden" name="caseId" value="${casee.id}"/>	
+								<input type="hidden" name="pageNumber" value="${currentPage}"/>
 								<div class="col-xs-4">
 									
 									<select name="newstatus" class="form-control">
@@ -212,6 +297,7 @@
 	       				
 	       				<form action="createcseupdate" modelAttribute="caseUpdate" method="POST" class="form">
 	       					<input type="hidden" name="caseId" value="${casee.id}"/>
+	       					<input type="hidden" name="pageNumber" value="${currentPage}"/>
 							<fieldset class="form-group">
 								<label for="internalUpdateDetail">Internal Update:</label>
 								<textarea name="internalUpdateDetail" rows="5" class="form-control"></textarea>

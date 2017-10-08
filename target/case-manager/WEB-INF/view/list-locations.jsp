@@ -25,8 +25,8 @@
 		<table class="table table-striped">
 			<tr>
 				<th>Location</th>
-				<th>Worker Count</th>
-				<th>Cases Count</th>
+				<th></th>
+				<th></th>
 			</tr>
 			<c:forEach var="location" items="${locations}" varStatus="status">
 				<tr>

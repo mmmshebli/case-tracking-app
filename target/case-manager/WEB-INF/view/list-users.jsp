@@ -24,6 +24,8 @@
 				<th>Disable</th>
 				<th>Reset Password</th>
 				<th>Temporary Password</th>
+				<th>Roles</th>
+				<th>Update Roles</th>
 			</tr>
 			<c:forEach var="worker" items="${workers}">
 				<tr>
@@ -42,6 +44,40 @@
 						<input type="hidden" value="${worker.user.userName}" name="username" />
 						<td><input type="submit" value="Reset Password" class="btn btn-default" /></td>
 						<td><input name="newpassword" type="text" class="form-control" placeholder="Enter Temporary Password and click Reset"/></td>
+					</form>
+					<td>
+						<c:forEach var="role" items="${worker.user.roles}">
+							<div>${role.role}</div>
+						</c:forEach>		
+					</td>
+					<form action="updateroles" method="POST">
+					<input type="hidden" name="userName" value="${worker.user.userName}"/>
+						<td>
+							<div class="dropdown">
+							  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							    Select Roles
+							    <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="padding-left:10px;">
+							    <li>
+							    	<input type="checkbox" id="admin" name="roles" value=1>
+	    							<label for="music">Administrator</label>
+							    </li>
+							    <li>
+							    	<input type="checkbox" id="supervisor" name="roles" value=2>
+	    							<label for="music">Supervisor</label>
+							    </li>
+							    <li>
+							    	<input type="checkbox" id="worker" name="roles" value=3>
+	    							<label for="music">Worker</label>
+							    </li>
+							    <li>
+							    	<input type="submit" value="Save New Roles" class="btn btn-default">
+							    </li>
+							  </ul>
+							</div>
+	    					
+						</td>
 					</form>
 					
 				</tr>

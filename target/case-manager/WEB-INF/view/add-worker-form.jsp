@@ -33,10 +33,11 @@
 					<div class="radio">
   						<label><form:radiobutton path="user.enabled" value="0" />Disabled </label>
 					</div></br>
-					<form:select path="user.userRole.role" multiple="false" class="form-control">
-						<form:option value="ROLE_WORKER">Worker</form:option>
+					<form:select path="user.roles[0].id" multiple="true" class="form-control">
+						<form:options items="${roles}" itemValue="id" itemLabel="role"/>
+						<%-- <form:option value="ROLE_WORKER">Worker</form:option>
 						<form:option value="ROLE_WSUPERVISOR">Supervisor</form:option>
-						<form:option value="ROLE_ADMIN">Administrator</form:option>
+						<form:option value="ROLE_ADMIN">Administrator</form:option> --%>
 					</form:select>
 					<%-- <form:select path="location" items="${locations}" itemValue="id" itemLabel="name"></form:select> --%>
 					<form:label path="location.id">Location:</form:label>

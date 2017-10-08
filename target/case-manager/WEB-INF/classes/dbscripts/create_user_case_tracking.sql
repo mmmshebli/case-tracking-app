@@ -1,3 +1,3 @@
-CREATE USER 'casetrackingdbadmin'@'localhost' IDENTIFIED BY 'casetrackingdbadmin';
+CREATE USER 'casetracking'@'localhost' IDENTIFIED BY 'casetracking';
 
-GRANT ALL PRIVILEGES ON * . * TO 'casetrackingdbadmin'@'localhost';
+GRANT ALL PRIVILEGES ON * . * TO 'casetracking'@'localhost';

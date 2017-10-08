@@ -90,15 +90,15 @@
 			<p>
 				<ul>
 					<li>This application is a Case management system, it has Cases, Workers, Applicants and Locations.</li>
-					<li>The case has a worker, aplicant and location as shown in the relational diagram below</li>
+					<li>The case has a worker, applicant and location as shown in the relational diagram below</li>
 					<li>The worker has a list of cases assigned to them, the worker has a location and they can only be assigned cases in their location.</li>
-					<li>The Application securoty is Role based, with three roles: Admin, Supervisor and Worker, the admin can see all tabs and all cases and workers, including
-					the user management like disable/enable and passwords resets, the superisor can see all tabs and cases but not the user management, and the wirker can see only 
+					<li>The Application security is Role based, with three roles: Admin, Supervisor and Worker, the admin can see all tabs and all cases and workers, including
+					the user management like disable/enable and passwords resets, the supervisor can see all tabs and cases but not the user management, and the worker can see only 
 					the case management tab and can only see the cases that are assigned to that specific worker.</li>
 					<li>Use the provided accounts in the table above to access and test the application</li>
 				</ul>			 
 			</p>
-			<div class="tablesimage"><img src="${pageContext.request.contextPath}/resources/images/image.png" height="500" width="500"></div>
+			<%-- <div class="tablesimage"><img src="${pageContext.request.contextPath}/resources/images/relational.png" height="500" width="500"></div> --%>
 		</div>
 	</div>
 	<script src="${pageContext.request.contextPath}/webjars/jquery/1.12.4/jquery.min.js"></script>
