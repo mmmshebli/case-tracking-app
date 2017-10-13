@@ -93,6 +93,9 @@ public class AppConfig extends WebMvcConfigurerAdapter{
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 		registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+		registry.addResourceHandler("/node_modules/**").addResourceLocations("/node_modules/");
+		registry.addResourceHandler("/app/**").addResourceLocations("/app/");
+		registry.addResourceHandler("/**").addResourceLocations("/");
 	}
 }
 

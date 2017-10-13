@@ -44,6 +44,11 @@ public class WelcomeController {
 		return "redirect:/case/list";
 	}
 	
+	@RequestMapping(value="/angular", method=RequestMethod.GET)
+	public String showAngularApp(){
+		return "app";
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model) {
         return "login";

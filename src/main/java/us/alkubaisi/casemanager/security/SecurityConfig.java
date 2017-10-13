@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/applicant/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
 				.antMatchers("/location/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
 				.antMatchers("/users/**").access("hasRole('ROLE_ADMIN')")
+				.antMatchers("/angular/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR') or hasRole('ROLE_WORKER')")
 				.antMatchers("/webjars/**").permitAll().anyRequest().permitAll()
 				.antMatchers("/resources/**").permitAll().anyRequest().permitAll()
 				.antMatchers("/favicon.ico").permitAll().anyRequest().permitAll()
