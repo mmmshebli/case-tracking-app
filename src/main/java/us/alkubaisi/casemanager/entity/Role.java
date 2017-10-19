@@ -14,6 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="ROLES")
 public class Role {
@@ -26,6 +29,9 @@ public class Role {
 	@Column(name="role")
 	private String role;
 	
+	//This also works but not needed
+	//@JsonIgnoreProperties({"roles"})
+	@JsonIgnore
 	@ManyToMany(fetch=FetchType.EAGER, cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(
 			name="USER_ROLES",

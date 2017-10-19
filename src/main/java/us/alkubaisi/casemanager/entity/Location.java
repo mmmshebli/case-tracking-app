@@ -2,7 +2,6 @@ package us.alkubaisi.casemanager.entity;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="LOCATION")
@@ -23,10 +25,14 @@ public class Location {
 	@Column(name="name")
 	private String name;
 	
+	@JsonIgnoreProperties({"cases"})
 	@OneToMany(mappedBy = "location")
+	@JsonIgnore
 	private List<Worker> workers;
 	
+	@JsonIgnoreProperties({"applicant", "worker", "caseUpdates", "location", "description"})
 	@OneToMany(mappedBy = "location")
+	@JsonIgnore
 	private List<Case> cases;
 	
 	public Location(){

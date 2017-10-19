@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="CASE_UPDATE")
 public class CaseUpdate {
@@ -33,6 +35,7 @@ public class CaseUpdate {
 	@Column(name="applicant_facing_update_detail")
 	private String applicantFacingUpdateDetail;
 	
+	@JsonIgnoreProperties({"applicant", "worker", "caseUpdates", "location", "description"})
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="case_id")
 	private Case casee;

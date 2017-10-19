@@ -18,6 +18,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(
 		name="WORKER",
@@ -42,12 +44,15 @@ public class Worker {
 	@Column(name="worker_number")
 	private int workerNumber;
 	
+	@JsonIgnoreProperties({"worker", "applicant", "caseUpdates", "description"})
 	@OneToMany(mappedBy="worker", cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	private List<Case> cases;
 	
+	@JsonIgnoreProperties({"workers", "cases"})
 	@ManyToOne
 	private Location location;
 	
+	@JsonIgnoreProperties({"password"})
 	@OneToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name="login_name")
 	private User user;

@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="CASEE")
 public class Case {
@@ -44,18 +47,22 @@ public class Case {
 	@Temporal(TemporalType.DATE)
 	private Date lastUpdated;
 	
+	@JsonIgnoreProperties({"cases"})
 	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name="worker_id")
 	private Worker worker;
 	
+	@JsonIgnoreProperties({"workers", "cases"})
 	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name="location_id")
 	private Location location;
 	
+	@JsonIgnoreProperties({"workers", "casee"})
 	@OneToOne( cascade={CascadeType.ALL}) //cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name="applicant_id")
 	private Applicant applicant;
 	
+	@JsonIgnoreProperties({"casee"})
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="casee", cascade={CascadeType.ALL})
 	private List<CaseUpdate> caseUpdates;
 	

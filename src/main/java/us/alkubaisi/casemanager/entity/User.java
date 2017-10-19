@@ -13,6 +13,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="USERS")
 public class User {
@@ -21,6 +24,7 @@ public class User {
 	@Column(name="username")
 	private String userName;
 	
+	@JsonIgnore
 	@Column(name="password")
 	private String password;
 	
@@ -35,6 +39,7 @@ public class User {
 			)
 	private List<Role> roles;
 	
+	@JsonIgnoreProperties({"cases", "location", "user"})
 	@OneToOne(mappedBy = "user", cascade={CascadeType.ALL})
 	private Worker worker;
 	

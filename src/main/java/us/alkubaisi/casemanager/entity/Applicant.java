@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="APPLICANT")
 public class Applicant {
@@ -32,6 +34,7 @@ public class Applicant {
 	@Temporal(TemporalType.DATE)
 	private Date dob;
 	
+	@JsonIgnoreProperties({"worker", "applicant", "caseUpdates"})
 	@OneToOne(mappedBy="applicant", cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	private Case casee;
 	
